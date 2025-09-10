@@ -1,4 +1,4 @@
-    print("Initializing...")
+print("Initializing...")
 
 import os
 import math as m
@@ -320,4 +320,5 @@ sys.stdout = RedirectText(log_text)
 sys.stderr = RedirectText(log_text)
 
 root.mainloop()
+
 
