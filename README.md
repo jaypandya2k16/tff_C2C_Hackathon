@@ -24,8 +24,17 @@ Historic stock trends and training ML Models to predict upcoming market trends o
 ---
 
 ## 📂 Project Structure
+
+On GitHub it will render **exactly as intended**:
+
+---
+
+## 📂 Project Structure
+
+```bash
 📁 project-root/
-├── iteration_2.py # Main Streamlit app
-├── requirements.txt # Python dependencies
-├── README.md # Documentation
-├── Data for ML.pdf # Training graphs & supporting data for ML model
+├── iteration_2.py        # Main Streamlit app
+├── requirements.txt      # Python dependencies
+├── README.md             # Documentation
+├── Data for ML.pdf       # Training graphs & supporting data for ML model
+
