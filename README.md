@@ -25,8 +25,6 @@ Historic stock trends and training ML Models to predict upcoming market trends o
 
 ## 📂 Project Structure
 
-On GitHub it will render **exactly as intended**:
-
 ---
 
 ## 📂 Project Structure
