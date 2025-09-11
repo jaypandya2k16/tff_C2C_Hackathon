@@ -214,32 +214,52 @@ def run_analysis(T, prd, p1, p2, seq_len, test_ratio, epochs, batch_size, predic
     return logs.getvalue()
 
 # -------------------------------
-# Streamlit Web App
+# Streamlit Web App (improved UI)
 # -------------------------------
 st.set_page_config(page_title="📈 Stock Analyzer", page_icon="📊", layout="wide")
 
-st.markdown(
-    """
+st.markdown("""
     <style>
     .main {background-color: #f5f7fa;}
     h1, h2, h3 {color: #2c3e50;}
-    .stButton>button {background-color: #e74c3c; color: white; font-weight: bold; border-radius: 10px;}
+    .stButton>button {
+        background-color: #e74c3c; 
+        color: white; 
+        font-weight: bold; 
+        border-radius: 10px;
+        padding: 0.5em 1em;
+    }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+    """, unsafe_allow_html=True)
 
 st.title("📈 Stock Analyzer")
+st.write("Analyze stock price trends, moving averages, and predict future values using LSTM.")
 
+# Help/How-to Expander
+with st.expander("ℹ️ How to Use"):
+    st.markdown("""
+    - **Ticker**: Stock symbol (like `TSLA` for Tesla).
+    - **Period**: Time period for data (like `3y` for 3 years).
+    - **MA-1 / MA-2**: Moving Average windows.
+    - **Seq Len**: Sequence length for LSTM training.
+    - **Test Ratio**: Portion of data used for testing (0.2 = 20%).
+    - **Epochs / Batch Size**: Training parameters for LSTM.
+    - **Predict Days**: Number of future days to forecast.
+    ℹ️ **Our Model trains itself using MAC data, in multiple sets of iterations to predict upcoming trends**
+    """)
+
+# Sidebar inputs
+st.sidebar.header("⚙️ Parameters")
 labels = ["Ticker", "Period", "MA-1", "MA-2", "Seq Len", "Test Ratio", "Epochs", "Batch Size", "Predict Days"]
 defaults = ["TSLA", "3y", "50", "200", "30", "0.2", "25", "16", "10"]
 entries = {}
-
 for lbl, dft in zip(labels, defaults):
-    entries[lbl] = st.text_input(lbl, dft)
+    entries[lbl] = st.sidebar.text_input(lbl, dft)
 
-# Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Moving Averages", "🤖 LSTM Predictions", "🔮 Future Forecast", "💰 Profit & Accuracy", "📜 Logs"])
+# Tabs for output
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["📊 Moving Averages", "🤖 LSTM Predictions", "🔮 Future Forecast", "💰 Profit & Accuracy", "📜 Logs"]
+)
 
 if st.button("🚀 Run Analysis"):
     with st.spinner("⚙️ Running analysis... please wait"):
