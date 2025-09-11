@@ -1,7 +1,7 @@
 # 📈 tff_C2C_Hackathon
 Historic stock trends and training ML Models to predict upcoming market trends of MNCs  
 
-🔗 **Live Demo**: [https://tff-stocks-analyzer.streamlit.app/](https://tff-stocks-analyzer.streamlit.app/)
+🔗 **Live Demo**: [https://tff-market-trends.streamlit.app/](https://tff-market-trends.streamlit.app/)
 
 ---
 
