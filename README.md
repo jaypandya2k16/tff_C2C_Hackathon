@@ -3,8 +3,8 @@ Historic stock trends and training ML Models to predict upcoming market trends o
 
 ## 👥 Team "tff" Members
 - Arkaansh Alok  
-- Kushagra Rawal  
 - Jay Pandya  
+- Kushagra Rawal  
 - Saksham Arora  
 
 ## ✨ Features
