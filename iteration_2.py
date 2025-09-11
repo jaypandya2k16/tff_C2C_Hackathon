@@ -18,7 +18,7 @@ import sys
 # Custom Log Frame (inside main GUI)
 # -------------------------------
 class RedirectText(object):
-    def __init__(self, text_widget):
+    def _init_(self, text_widget):
         self.output = text_widget
 
     def write(self, string):
@@ -40,6 +40,7 @@ try:
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense, Dropout
     from sklearn.preprocessing import MinMaxScaler
+    from sklearn.metrics import mean_squared_error, r2_score
 except ImportError:
     ML_AVAILABLE = False
     print("⚠ TensorFlow / scikit-learn not installed. Neural network features disabled.")
@@ -229,10 +230,10 @@ def run_analysis(T, prd, p1, p2, seq_len, test_ratio, epochs, batch_size, predic
 
             # Plot test predictions
             plt.figure(figsize=(11, 6))
-            plt.plot(range(len(CL)), CL, label="Historical")
+            plt.plot(range(len(CL)), CL, color="blue", label="Historical")
             start_idx = len(CL) - len(y_test_inv)
-            plt.plot(range(start_idx, len(CL)), y_test_inv, label="Actual present data")
-            plt.plot(range(start_idx, len(CL)), pred_test, label="Predicted data")
+            plt.plot(range(start_idx, len(CL)), y_test_inv, color="orange", label="Actual present data")
+            plt.plot(range(start_idx, len(CL)), pred_test, color="green", label="Predicted data")
             plt.legend()
             plt.title(f"{T} | LSTM Test Predictions")
             plt.xlabel(f"Day count from {date1y}")
@@ -241,10 +242,47 @@ def run_analysis(T, prd, p1, p2, seq_len, test_ratio, epochs, batch_size, predic
             plt.savefig(f"Running Tests {date_end} {T[:4]}")
             plt.show()
 
+            # --- Realistic metrics + accuracy ---
+            rmse = np.sqrt(mean_squared_error(y_test_inv, pred_test))
+            r2 = r2_score(y_test_inv, pred_test)
+            accuracy = max(0, r2) * 100
+
+            # Create Tkinter popup for accuracy
+            acc_win = tk.Tk()
+            acc_win.title("📊 Model Evaluation")
+            acc_win.configure(bg="#e6ffe6")
+
+            ot = f"✅ Accuracy: {accuracy:.2f}%\n📌 RMSE: {rmse:.2f}\n📌 R² Score: {r2:.3f}"
+
+            label = tk.Label(
+                acc_win,
+                text=ot,
+                font=("Arial", 14, "bold"),
+                justify="center",
+                bg="#e6ffe6",
+                fg="#003300",
+                padx=20,
+                pady=20,
+            )
+            label.pack()
+
+            # Center window
+            acc_win.update_idletasks()
+            width = acc_win.winfo_width()
+            height = acc_win.winfo_height()
+            x = (acc_win.winfo_screenwidth() // 2) - (width // 2)
+            y = (acc_win.winfo_screenheight() // 2) - (height // 2)
+            x -= 120
+            y -= 80
+            acc_win.geometry(f"{width}x{height}+{x}+{y}")
+            acc_win.lift()
+            acc_win.attributes("-topmost", True)
+            acc_win.after(200, lambda: acc_win.attributes("-topmost", False))
+
             # Plot future predictions
             plt.figure(figsize=(11, 6))
-            plt.plot(xCL, CL, label="Historical")
-            plt.plot(range(len(CL), len(CL) + predict_days), future_preds, "--", label="Future Prediction")
+            plt.plot(xCL, CL, color="blue", label="Historical")
+            plt.plot(range(len(CL), len(CL) + predict_days), future_preds, "--", color="red", label="Future Prediction")
             plt.legend()
             plt.xlabel(f"Day count from {date1y}")
             plt.ylabel("Price")
@@ -295,7 +333,7 @@ root.after(200, lambda: root.attributes("-topmost", False))
 root.focus_force()
 
 labels = ["Ticker", "Period", "MA-1", "MA-2", "Seq Len", "Test Ratio", "Epochs", "Batch Size", "Predict Days"]
-defaults = ["TSLA", "1y", "20", "50", "30", "0.2", "25", "16", "10"]
+defaults = ["TSLA", "3y", "50", "200", "30", "0.2", "25", "16", "10"]
 entries = []
 
 for i, (lbl, dft) in enumerate(zip(labels, defaults)):
@@ -320,5 +358,3 @@ sys.stdout = RedirectText(log_text)
 sys.stderr = RedirectText(log_text)
 
 root.mainloop()
-
-
